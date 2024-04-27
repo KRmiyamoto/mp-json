@@ -3,6 +3,9 @@ import java.math.BigDecimal;
 
 /**
  * JSON reals.
+ * @author Marina Ananias
+ * @author Linda Jing
+ * @author Keely Miyamoto
  */
 public class JSONReal implements JSONValue {
 

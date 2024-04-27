@@ -4,6 +4,9 @@ import java.util.Iterator;
 
 /**
  * JSON arrays.
+ * @author Marina Ananias
+ * @author Linda Jing
+ * @author Keely Miyamoto
  */
 public class JSONArray implements JSONValue {
 

@@ -2,6 +2,9 @@ import java.io.PrintWriter;
 
 /**
  * JSON strings.
+ * @author Marina Ananias
+ * @author Linda Jing
+ * @author Keely Miyamoto
  */
 public class JSONString implements JSONValue {
 

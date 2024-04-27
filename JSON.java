@@ -6,6 +6,9 @@ import java.text.ParseException;
 
 /**
  * Utilities for our simple implementation of JSON.
+ * @author Marina Ananias
+ * @author Linda Jing
+ * @author Keely Miyamoto
  */
 public class JSON {
   // +---------------+-----------------------------------------------

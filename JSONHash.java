@@ -3,6 +3,9 @@ import java.util.Iterator;
 
 /**
  * JSON hashes/objects.
+ * @author Marina Ananias
+ * @author Linda Jing
+ * @author Keely Miyamoto
  */
 public class JSONHash implements JSONValue {
 
