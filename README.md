@@ -8,3 +8,4 @@ Implemented by Marina Ananias, Linda Jing, and Keely Miyamoto for CSC-207-01 202
 Acknowledgements:
 
 * Skeleton code by SamR
+* Chained Hash Lab (partner: Arsal)
