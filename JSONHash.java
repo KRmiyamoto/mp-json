@@ -1,5 +1,7 @@
 import java.io.PrintWriter;
 import java.util.Iterator;
+import java.util.NoSuchElementException;
+import java.util.ArrayList;
 
 /**
  * JSON hashes/objects.
@@ -12,6 +14,10 @@ public class JSONHash implements JSONValue {
   // +--------+------------------------------------------------------
   // | Fields |
   // +--------+
+
+  Object[] buckets;
+  int size;
+
 
   // +--------------+------------------------------------------------
   // | Constructors |
@@ -71,12 +77,71 @@ public class JSONHash implements JSONValue {
     return null;        // STUB
   } // get(JSONString)
 
-  /**
+    /**
    * Get all of the key/value pairs.
    */
   public Iterator<KVPair<JSONString,JSONValue>> iterator() {
-    return null;        // STUB
-  } // iterator()
+    return new Iterator<KVPair<JSONString, JSONValue>>() {
+
+      // Starting positions in array of buckets and index within that bucket.
+      int currentBucket = 0;
+      int indexInBucket = 0;
+
+      public boolean hasNext() {
+        // Check currentBucket is within bounds.
+        if (currentBucket >= buckets.length) {
+          return false;
+        } // if
+
+        // Look for next unempty bucket. If one exists, return true.
+        do {
+          currentBucket++;
+          if (buckets[currentBucket] != null) {
+            return true;
+          } // if
+        } while (currentBucket < buckets.length);
+
+        // Otherwise return false.
+        return false;
+      } // hasNext()
+
+      @SuppressWarnings("unchecked")
+      public KVPair<JSONString, JSONValue> next() throws NoSuchElementException {
+        // If there is no next bucket, throw exception.
+        if (!this.hasNext()) {
+          throw new NoSuchElementException();
+        } // if
+
+        // If current bucket is empty, find next nonempty bucket.
+        if (buckets[currentBucket] == null) {
+          currentBucket++;
+          while (buckets[currentBucket] == null) {
+            currentBucket += 1;
+          } // while
+          indexInBucket = 0;
+        } // if
+
+        // Initialize an ArrayList for the current bucket.
+        ArrayList<KVPair<JSONString, JSONValue>> alist = (ArrayList<KVPair<JSONString, JSONValue>>) buckets[currentBucket];
+        // Save next index in the current bucket.
+        int indexOfReturned = indexInBucket;
+
+        // If indexInBucket is last index in ArrayList, find next nonempty bucket.
+        if (indexInBucket == (alist.size() - 1)) {
+          indexInBucket = 0;
+          currentBucket++;
+          while ((buckets[currentBucket] == null) && (currentBucket < buckets.length)) {
+            currentBucket += 1;
+          } // while
+        } else {
+          indexInBucket++;
+        } // if
+
+        return alist.get(indexOfReturned);
+      } // next()
+
+    }; // new Iterator
+  }
 
   /**
    * Set the value associated with a key.
