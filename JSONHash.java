@@ -158,7 +158,7 @@ public class JSONHash implements JSONValue {
   /**
    * Get all of the key/value pairs.
    */
-  public Iterator<KVPair<JSONString, JSONValue>> iterator() {
+  public Iterator<KVPair<JSONString,JSONValue>> iterator() {
     return new Iterator<KVPair<JSONString, JSONValue>>() {
 
       // Starting positions in array of buckets and index within that bucket.
@@ -200,8 +200,7 @@ public class JSONHash implements JSONValue {
         } // if
 
         // Initialize an ArrayList for the current bucket.
-        ArrayList<KVPair<JSONString, JSONValue>> alist =
-            (ArrayList<KVPair<JSONString, JSONValue>>) buckets[currentBucket];
+        ArrayList<KVPair<JSONString, JSONValue>> alist = (ArrayList<KVPair<JSONString, JSONValue>>) buckets[currentBucket];
         // Save next index in the current bucket.
         int indexOfReturned = indexInBucket;
 
