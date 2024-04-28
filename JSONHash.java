@@ -65,7 +65,7 @@ public class JSONHash implements JSONValue {
    * Convert to a string (e.g., for printing).
    */
   public String toString() {
-    String ret = "";
+    String ret = "{";
     for (int i = 0; i < this.buckets.length; i++) {
       @SuppressWarnings("unchecked")
       ArrayList<KVPair<JSONString, JSONValue>> alist =
@@ -73,13 +73,13 @@ public class JSONHash implements JSONValue {
       if (alist != null) {
         for (int j = 0; j < alist.size(); j++) {
           KVPair<JSONString, JSONValue> pair = alist.get(j);
-          String p = ("  " + i + ": <" + pair.key() + "(" + pair.key().hashCode() + "):"
-              + pair.value() + ">");
+          String p = (pair.key() + ": " + pair.value());
           ret += p;
           if (j != alist.size() - 1) {
-            ret += ",";
+            ret += ", ";
           }
         } // for each pair in the bucket
+        ret += "}";
       } // if the current bucket is not null
     } // for each bucket
     return ret;
@@ -158,7 +158,7 @@ public class JSONHash implements JSONValue {
   /**
    * Get all of the key/value pairs.
    */
-  public Iterator<KVPair<JSONString,JSONValue>> iterator() {
+  public Iterator<KVPair<JSONString, JSONValue>> iterator() {
     return new Iterator<KVPair<JSONString, JSONValue>>() {
 
       // Starting positions in array of buckets and index within that bucket.
@@ -200,7 +200,8 @@ public class JSONHash implements JSONValue {
         } // if
 
         // Initialize an ArrayList for the current bucket.
-        ArrayList<KVPair<JSONString, JSONValue>> alist = (ArrayList<KVPair<JSONString, JSONValue>>) buckets[currentBucket];
+        ArrayList<KVPair<JSONString, JSONValue>> alist =
+            (ArrayList<KVPair<JSONString, JSONValue>>) buckets[currentBucket];
         // Save next index in the current bucket.
         int indexOfReturned = indexInBucket;
 
