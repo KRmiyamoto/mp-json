@@ -80,6 +80,7 @@ public class JSONReal implements JSONValue {
    */
   public void writeJSON(PrintWriter pen) {
     pen.print(this.toString());
+    pen.flush();
   } // writeJSON(PrintWriter)
 
   /**

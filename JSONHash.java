@@ -105,10 +105,11 @@ public class JSONHash implements JSONValue {
 
   /**
    * Write the value as JSON.
-   * /////////////////////////////////////////////////////////////////////////
+   * 
    */
   public void writeJSON(PrintWriter pen) {
-    pen.println(this.buckets.toString());
+    pen.println(this.toString());
+    pen.flush();
   } // writeJSON(PrintWriter)
 
   /**
