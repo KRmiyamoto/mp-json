@@ -62,73 +62,76 @@ public class JSON {
    * Parse JSON from a reader, keeping track of the current position
    */
   static JSONValue parseKernel(Reader source) throws ParseException, IOException {
+    String input = "";
+    JSONArray ret = new JSONArray();
+    JSONHash hashTable = new JSONHash();
+    
     int ch;
     ch = skipWhitespace(source);
     if (-1 == ch) {
       throw new ParseException("Unexpected end of file", pos);
-    }
+    } // if
 
-    char c = (char) ch;
-
-    if (c == '[') {
-      JSONArray value = new JSONArray();
-      while (!(c == ']')) {
-        value.add(parseKernel(source));
-      }
-      return value;
+    if ((char) ch == '[') {
+      while (ch != ']') {
+        ret.add(parseKernel(source));
+      } // while
+      return ret;
     } // if JSONArray
 
-    if (c == ('"')) {
-      String comp = "";
-      while (!(c == ('"'))) {
-        comp += (char) ch;
-        ch = skipWhitespace(source);
-      }
+    if ((char) ch == '\"') {
+      while ((ch = source.read()) != '\"') {
+        input += String.valueOf((char) ch);
+      } // while
       skipWhitespace(source);
-      if ((comp.equals("null")) || (comp.equals("true")) || (comp.equals("false"))) {
-        JSONConstant value = new JSONConstant(comp);
-        return value;
-      }
-      return new JSONString(comp);
-    } // if JSONConstant or JSONString
+      return new JSONString(input);
+    } // if JSONString
 
-    if (c == '{') {
-      JSONHash hashTable = new JSONHash();
-      while (!(c == '}')) {
-        JSONValue key = null;
-        JSONValue val = null;
-        while (!(c == ':')) {
-          key = parseKernel(source);
-        }
-        while (!(c == ',')) {
-          val = parseKernel(source);
-        }
-        hashTable.set((JSONString) key, (JSONValue) val);
-      }
-      return hashTable;
+
+    if (((char) ch == 't') || ((char) ch == 'f') || ((char) ch == 'n')) {
+      do {
+        input += String.valueOf((char) ch);
+        ch = skipWhitespace(source);
+      } while ((ch != -1) && (ch != ',') && (ch != ']') && (ch != '}'));
+
+      switch(input) {
+        case "true":
+          return JSONConstant.TRUE;
+        case "false":
+          return JSONConstant.FALSE;
+        case "null":
+          return JSONConstant.NULL;  
+      } // switch
+    } // if JSONConstant
+
+    if ((char) ch == '{') {
+      JSONValue key = null;
+      JSONValue val = null;
+      while (ch != '}') {
+        key = parseKernel(source);
+        ch = skipWhitespace(source);
+        val = parseKernel(source);
+        hashTable.set((JSONString) key, val);
+      } // while
     } // if JSONHash
 
-    if ((Character.isDigit(c)) || (c == '.') || (c == '-')) {
-      String ret = String.valueOf(c);
+    if ((Character.isDigit((char) ch)) || ((char) ch == '.') || ((char) ch == '-')) {
+      do {
+        input += String.valueOf((char) ch);
+      } while (((ch = skipWhitespace(source)) != -1) && (ch != ',') && (ch != ']') && (ch != '}'));
 
-      while ((Character.isDigit(c)) || (c == '.')) {
-        ret += (char) ch;
-        ch = skipWhitespace(source);
-      } // while
-      if (ret.contains(".")) {
-        return new JSONReal(ret);
+      if ((input.substring(0, 2).equals("-0")) && (input.length() > 2)) {
+        throw new IOException("Negative leading 0s not allowed!");
+      } // if
+
+      if (input.contains(".")) {
+        return new JSONReal(input);
       } else {
-
-        if ((ret.substring(0, 2).equals("-0")) && (ret.length() > 2)) {
-          throw new IOException("Negative leading 0s not allowed!");
-        }
-
-        return new JSONInteger(ret);
-      }
+        return new JSONInteger(input);
+      } // if
     } // if JSONInteger or if JSONReal
 
     throw new IOException("No JSONValues were identified");
-
   } // parseKernel
 
   /**

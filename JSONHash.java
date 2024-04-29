@@ -65,7 +65,7 @@ public class JSONHash implements JSONValue {
    * Convert to a string (e.g., for printing).
    */
   public String toString() {
-    String ret = "{";
+    String ret = "";
     for (int i = 0; i < this.buckets.length; i++) {
       @SuppressWarnings("unchecked")
       ArrayList<KVPair<JSONString, JSONValue>> alist =
@@ -73,16 +73,11 @@ public class JSONHash implements JSONValue {
       if (alist != null) {
         for (int j = 0; j < alist.size(); j++) {
           KVPair<JSONString, JSONValue> pair = alist.get(j);
-          String p = (pair.key() + ": " + pair.value());
-          ret += p;
-          if (j != alist.size() - 1) {
-            ret += ", ";
-          }
+          ret = ret + ", " + pair.key() + ": " + pair.value();
         } // for each pair in the bucket
-        ret += "}";
       } // if the current bucket is not null
     } // for each bucket
-    return ret;
+    return "{" + ret.substring(2) + "}";
   } // toString()
 
   /**
