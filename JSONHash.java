@@ -3,7 +3,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
-import java.util.Random;
 
 /**
  * JSON hashes/objects.
@@ -40,11 +39,6 @@ public class JSONHash implements JSONValue {
    */
   Object[] buckets;
 
-  /**
-   * Our helpful random number generator, used primarily when expanding the size of the table..
-   */
-  Random rand;
-
   // +--------------+------------------------------------------------
   // | Constructors |
   // +--------------+
@@ -53,7 +47,6 @@ public class JSONHash implements JSONValue {
    * Create a new hash table.
    */
   public JSONHash() {
-    this.rand = new Random();
     this.clear();
   } // JSONHash
 
@@ -89,7 +82,6 @@ public class JSONHash implements JSONValue {
     } else {
       return false;
     }
-
   } // equals(Object)
 
   /**
@@ -235,6 +227,7 @@ public class JSONHash implements JSONValue {
     @SuppressWarnings("unchecked")
     ArrayList<KVPair<JSONString, JSONValue>> alist =
         (ArrayList<KVPair<JSONString, JSONValue>>) this.buckets[index];
+
     // Special case: Nothing there yet
     if (alist == null) {
       alist = new ArrayList<KVPair<JSONString, JSONValue>>();
@@ -244,6 +237,7 @@ public class JSONHash implements JSONValue {
     for (int i = 0; i < alist.size(); i++) {
       if (alist.get(i).key().equals(key)) {
         alist.set(i, new KVPair<JSONString, JSONValue>(key, value));
+        return;
       }
     } // for
 
@@ -276,7 +270,7 @@ public class JSONHash implements JSONValue {
   @SuppressWarnings("unchecked")
   void expand() {
     // Figure out the size of the new table
-    int newSize = 2 * this.buckets.length + rand.nextInt(10);
+    int newSize = 2 * this.buckets.length;
     // Remember the old table
     Object[] oldBuckets = this.buckets;
     // Create a new table of that size.
